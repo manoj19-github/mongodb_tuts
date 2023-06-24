@@ -29,19 +29,36 @@ db.students.updateMany({gender:'Female'},{$inc:{'tiffin.$[].pizza':-1}})
 
 // find and update matched array elements based on condition
 db.students.updateMany({gender:{$eq:"Female"}},{$set:{"tiffin.$[self].ratings":4.5}},{arrayFilters:[{"self.pizza":{$gte:2}}]})
+db.users.updateMany({hobbies:{$elemMatch:{title:"Sports",frequency:{$gt:2}}}},{$set:{"hobbies.$[self].isSportsMan":true}}
+,{arrayFilters:[{"self.frequency":{$gt:2}}]})
 
+
+//add new element to the array elements
+db.users.updateOne({name:"Anna"},{$push:{hobbies:{$each:[{title:"Coding",frequency:4.5}]}}})
 // find the object based on particular property exists 
 db.students.find({"tiffin.origin":{$exists:true}})
 
 // find a distinct property value 
 db.students.distinct("gender")
-
+// find all document that have one subdocument of hobbies which are match these conditions 
+db.users.find({hobbies:{$elemMatch:{title:"Sports",frequency:3}}})
+//match elements and add one more property to the element
+> db.users.updateMany({hobbies:{$elemMatch:{title:"Cooking",frequency:{$gte:5}}}},{$set:{"hobbies.$.isReach":true}})
+//find all documents when a particular array items is exists in these array
+ db.flights.find({genres:{$all:['Drama', 'Horror']}})
 // add one object to array of object 
 db.students.updateOne({last_name:'Galpen'},{$push:{tiffin:{tea:2,biscuit:4}}})
 // add multiple object to array of object 
 db.students.updateOne({last_name:'Galpen'},{$push:{tiffin:{$each:[{'rice chicken':3},{biriyani:4},{coffe:3.5}]}}})
 // add object which not present in the array 
 db.students.updateOne({last_name:'Galpen'},{$addToSet:{tiffin:{$each:[{'rice chicken':3},{biriyani:4},{coffe:3.5}]}}})
+// update collection based on conditions 
+db.flights.updateMany({$expr:{$gte:["$tvrage","$externals.thevdb"]}},{$mul:{"externals.thetvdb":1.4}})
+
+// apply rejex to search data
+db.flights.find({summary:{$regex:/thriller/}})
+
+
 
 // ***************************************    aggrgation framework ******************************** /// 
 
@@ -57,3 +74,5 @@ db.students.aggregate([ {$group:{_id:{gender:"$gender"},totalStudents:{$sum:1}}}
 db.students.aggregate([ {$group:{_id:{gender:"$gender"},totalStudents:{$sum:1}}},{$sort:{totalStudents:1}}])
 // aggrgate with project the data 
 db.students.aggregate([{$project:{_id:0,gender:1,fullName:{$concat:["$first_name"," " ,"$last_name"]}}}])
+
+
