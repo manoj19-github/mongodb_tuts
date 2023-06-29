@@ -55,6 +55,14 @@ db.students.updateOne({last_name:'Galpen'},{$addToSet:{tiffin:{$each:[{'rice chi
 // update collection based on conditions 
 db.flights.updateMany({$expr:{$gte:["$tvrage","$externals.thevdb"]}},{$mul:{"externals.thetvdb":1.4}})
 
+//update all elements within the array 
+db.users.updateMany({"hobbies.frequency":{$gt:2}},{$inc:{"hobbies.$[].frequency":2}})
+// update first element within the array 
+db.users.updateMany({"hobbies.frequency":{$gt:2}},{$inc:{"hobbies.$.frequency":2}})
+// update specific elements with addToSet method
+db.users.updateMany({name:'Max'},{$addToSet:{hobbies:{title:'coding',frequency:5}}})
+
+
 // apply rejex to search data
 db.flights.find({summary:{$regex:/thriller/}})
 
