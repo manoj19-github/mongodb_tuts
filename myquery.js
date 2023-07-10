@@ -32,6 +32,13 @@ db.students.updateMany({gender:{$eq:"Female"}},{$set:{"tiffin.$[self].ratings":4
 db.users.updateMany({hobbies:{$elemMatch:{title:"Sports",frequency:{$gt:2}}}},{$set:{"hobbies.$[self].isSportsMan":true}}
 ,{arrayFilters:[{"self.frequency":{$gt:2}}]})
 
+//  find data that age is exists and age is not null 
+db.users.find({age:{$exists:true},age:{$ne:null}})
+db.users.find({age:{$exists:true,$ne:null}})
+
+// search text based on regex pattern
+db.flights.find({summary:{$regex:/VAMPiRISM/gmi}})
+
 
 //add new element to the array elements
 db.users.updateOne({name:"Anna"},{$push:{hobbies:{$each:[{title:"Coding",frequency:4.5}]}}})
