@@ -73,6 +73,9 @@ db.users.updateMany({name:'Max'},{$addToSet:{hobbies:{title:'coding',frequency:5
 // apply rejex to search data
 db.flights.find({summary:{$regex:/thriller/}})
 
+// projection in document array 
+db.users.find({name:"Chris"},{hobbies:{$elemMatch:{$eq:"Sports"}}})
+
 
 
 // ***************************************    aggrgation framework ******************************** /// 
