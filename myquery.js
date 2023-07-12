@@ -76,7 +76,17 @@ db.flights.find({summary:{$regex:/thriller/}})
 // projection in document array 
 db.users.find({name:"Chris"},{hobbies:{$elemMatch:{$eq:"Sports"}}})
 
+// upsert data in database
+db.users.updateMany({name:"Manoj"},{$set:{hobbies:[{title:"Cricket",frequency:4.7}],phone:'9748159138',age:26}},{upsert:true})
 
+// elemMatch 
+db.users.updateMany({hobbies:{$elemMatch:{"title":"Cricket"}}},{$set:{"hobbeis.$.title":"cricket"}})
+ 
+
+// rename a field 
+db.users.updateOne({hobbeis:{$exists:true}},{$rename:{hobbeis:"hobbies"}})
+// update a particular array element 
+db.users.updateMany({hobbies:{$elemMatch:{title:'cricket',frequency:{$gte:4.0}}}},{$set:{"hobbies.$.isSportsMan":true}})
 
 // ***************************************    aggrgation framework ******************************** /// 
 
