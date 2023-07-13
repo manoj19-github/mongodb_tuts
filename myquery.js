@@ -81,12 +81,25 @@ db.users.updateMany({name:"Manoj"},{$set:{hobbies:[{title:"Cricket",frequency:4.
 
 // elemMatch 
 db.users.updateMany({hobbies:{$elemMatch:{"title":"Cricket"}}},{$set:{"hobbeis.$.title":"cricket"}})
- 
+ // update all array elements 
+ db.users.updateMany({hobbies:{$elemMatch:{frequency:{$gte:3}}}},{$set:{"hobbies.$[].grade":'A'}})
 
 // rename a field 
 db.users.updateOne({hobbeis:{$exists:true}},{$rename:{hobbeis:"hobbies"}})
 // update a particular array element 
 db.users.updateMany({hobbies:{$elemMatch:{title:'cricket',frequency:{$gte:4.0}}}},{$set:{"hobbies.$.isSportsMan":true}})
+
+// UPDATE A SPECIFIC ARRAY ELEMENT 
+db.users.updateMany({name:{$regex:/^ma/i}},{$set:{'hobbies.$[self].nationality':'Indian'}},{arrayFilters:[{'self.title':{$regex:/^cricket$/i}}]})
+
+// add new element to the existing document array 
+db.users.updateMany({name:'Manoj'},{$push: {hobbies:{$each:[{title:'swimming',frequency:6},{title:'drawing',frequency:4.8},{title:'coding',frequency:4.5}],$sort:{frequency:-1}}}})
+
+// remove a specific element from the existing document array 
+db.users.updateMany({name:{$regex:/^ma/i}},{$pull:{hobbies:{title:'coding',frequency:4.5}}})
+// add only unique elements to the existing document array
+db.users.updateMany({name:{$eq:'Manoj'}},{$addToSet:{hobbies:{title:'cricket',frequency:4.5}}})
+
 
 // ***************************************    aggrgation framework ******************************** /// 
 
