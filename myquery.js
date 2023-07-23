@@ -73,11 +73,22 @@ db.users.updateMany({name:'Max'},{$addToSet:{hobbies:{title:'coding',frequency:5
 // apply rejex to search data
 db.flights.find({summary:{$regex:/thriller/}})
 
+// using slice on array 
+ db.users.find({id:{$lte:12}},{sports:{$slice:[1,2]},first_name:1,last_name:1})
+
 // projection in document array 
 db.users.find({name:"Chris"},{hobbies:{$elemMatch:{$eq:"Sports"}}})
 
 // upsert data in database
-db.users.updateMany({name:"Manoj"},{$set:{hobbies:[{title:"Cricket",frequency:4.7}],phone:'9748159138',age:26}},{upsert:true})
+db.users.updateMany({name:"Manoj"},
+{$set:{hobbies:[{title:"Cricket",frequency:4.7}],phone:'9748159138',age:26}},
+{upsert:true})
+
+// increment data 
+db.users.updateMany({marks:{$gte:50}},{$inc:{marks:1}})
+
+//  find and update all array element 
+db.users.updateMany({$and:[{id:{$lte:5}},{"hobbies.name":"cricket"}]},{$set:{"hobbies.$[].rating":1.5}})
 
 // elemMatch 
 db.users.updateMany({hobbies:{$elemMatch:{"title":"Cricket"}}},{$set:{"hobbeis.$.title":"cricket"}})
@@ -99,6 +110,15 @@ db.users.updateMany({name:'Manoj'},{$push: {hobbies:{$each:[{title:'swimming',fr
 db.users.updateMany({name:{$regex:/^ma/i}},{$pull:{hobbies:{title:'coding',frequency:4.5}}})
 // add only unique elements to the existing document array
 db.users.updateMany({name:{$eq:'Manoj'}},{$addToSet:{hobbies:{title:'cricket',frequency:4.5}}})
+
+// update specific element in the document 
+db.users.updateMany({marks:{$lte:55},hobbies:{$exists:true}},{$set:{"hobbies.$[self].rating":3.5}},{arrayFilters:[{"self.rating":3.3}]})
+
+// add additional element in the document 
+db.users.updateMany({marks:{$in:[38,55]}},{$push:{hobbies:{$each:[{name:'football',rating:3.2},{name:'badminton',rating:3.8}],$sort:{rating:-1}}}})
+ // remove an array element 
+ db.users.updateMany({marks:{$in:[38,55]}},{$pull:{hobbies:{name:'football',rating:3.2}}})
+
 
 
 // ***************************************    aggrgation framework ******************************** /// 
