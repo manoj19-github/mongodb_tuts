@@ -118,7 +118,8 @@ db.users.updateMany({marks:{$lte:55},hobbies:{$exists:true}},{$set:{"hobbies.$[s
 db.users.updateMany({marks:{$in:[38,55]}},{$push:{hobbies:{$each:[{name:'football',rating:3.2},{name:'badminton',rating:3.8}],$sort:{rating:-1}}}})
  // remove an array element 
  db.users.updateMany({marks:{$in:[38,55]}},{$pull:{hobbies:{name:'football',rating:3.2}}})
-
+// create partial index 
+db.users.createIndex({marks:1},{partialFilterExpression:{gender:'Male'}})
 
 
 // ***************************************    aggrgation framework ******************************** /// 
