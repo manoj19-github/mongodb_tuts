@@ -212,3 +212,16 @@ db.students.aggregate([{$project:{_id:0,noOfHobbies:{$size:"$hobbies"}}}])
 db.students.aggregate([{$project:{_id:1,name:1,examScore:{$filter:{input:"$examScores",as:"self",cond:{$gte:["$$self.score",60]}}}}}])
 
 
+
+// getting highest paper of each and every student
+db.students.aggregate([
+     {$unwind:"$examScores"},
+     {$project:{_id:1,name:1,age:1,score:"$examScores.score"}},
+     {$sort:{score:-1}},
+     {$group:{_id:"$_id",name:{$first:"$name"},maxScore:{$max:"$score"}}},
+     {$project:{_id:1,name:1,age:1,score:-1,maxScore:1}},
+     {$sort:{maxScore:-1}}
+     ])
+
+
+     db.students.aggregate([{$bucket:{groupBy:"$age",boundaries:[29,30],output:{numPersons:{$sum:1},averageAge:{$avg:"$age"}}}}])
