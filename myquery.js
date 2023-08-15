@@ -150,3 +150,65 @@ db.users.aggregate([{$match:{gender:"Female"}},{$group:{_id:{gender:"$gender"},t
 ProductsStatModel.aggregate([
     { $lookup: { from: 'products', localField: 'productId', foreignField: '_id', as: 'info' } }
 ]);
+
+db.users.aggregate([{$project:{_id:0,full_name:{$concat:[{$toUpper:"$first_name"},"  " ,{$toUpper:"$last_name"}]}}}])
+
+db.users.aggregate([
+    {
+        $project:{
+            _id:0,
+            gender:1,
+            fullName:{
+                $concat:[
+                    {
+                        $toUpper:{
+                            $substrCP:[
+                                "$first_name",0,1
+                            ]
+                        }
+                    },
+                    {
+                        $substrCP:[
+                            "$first_name",1,
+                                {
+                                    $subtract:[
+                                        {$strLenCP:"$first_name"},1]
+                                }
+                            ]
+                    },
+                    " ",
+                    {
+                        $toUpper:{
+                            $substrCP:[
+                                "$last_name",0,1
+                            ]
+                        }
+                    },
+                    {
+                        $substrCP:[
+                            "$last_name",1,
+                                {
+                                    $subtract:[
+                                        {$strLenCP:"$last_name"},1]
+                                }
+                            ]
+                    },
+                ]
+            }
+        }
+    }
+])
+
+// get all hobbies array group by age 
+db.students.aggregate([{ $group: { _id:{age: "$age" }, allHobies: { $push: "$hobbies" }} }])
+// get all hobbies array group by age and remove duplicate value
+db.students.aggregate([{$unwind:"$hobbies"},{ $group: { _id:{age: "$age" }, allHobies: { $addToSet: "$hobbies" }} }])
+
+
+//getting the length of an array by projection
+db.students.aggregate([{$project:{_id:0,noOfHobbies:{$size:"$hobbies"}}}])
+
+// get all student data which have obtained marks 60 or above
+db.students.aggregate([{$project:{_id:1,name:1,examScore:{$filter:{input:"$examScores",as:"self",cond:{$gte:["$$self.score",60]}}}}}])
+
+
