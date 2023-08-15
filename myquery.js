@@ -120,7 +120,8 @@ db.users.updateMany({marks:{$in:[38,55]}},{$push:{hobbies:{$each:[{name:'footbal
  db.users.updateMany({marks:{$in:[38,55]}},{$pull:{hobbies:{name:'football',rating:3.2}}})
 // create partial index 
 db.users.createIndex({marks:1},{partialFilterExpression:{gender:'Male'}})
-
+db.users.createIndex({email:"text"})
+ db.users.find({$text:{$search:"elpais"}})
 
 // ***************************************    aggrgation framework ******************************** /// 
 
@@ -137,4 +138,15 @@ db.students.aggregate([ {$group:{_id:{gender:"$gender"},totalStudents:{$sum:1}}}
 // aggrgate with project the data 
 db.students.aggregate([{$project:{_id:0,gender:1,fullName:{$concat:["$first_name"," " ,"$last_name"]}}}])
 
+// aggregate for group by 
+db.users.aggregate([{$match:{gender:'Male'}},{$group:{_id:{car:"$car"},totalPersons:{$sum:1}}}])
 
+// aggreate group by with sort
+db.users.aggregate([{$match:{gender:'Male'}},{$group:{_id:{car:"$car"},totalPersons:{$sum:1}}},{$sort:{totalPersons:-1}}])
+
+db.users.aggregate([{$match:{gender:"Female"}},{$group:{_id:{gender:"$gender"},totalMarks:{$sum:1}}}])
+
+
+ProductsStatModel.aggregate([
+    { $lookup: { from: 'products', localField: 'productId', foreignField: '_id', as: 'info' } }
+]);
