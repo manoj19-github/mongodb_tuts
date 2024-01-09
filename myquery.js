@@ -225,3 +225,6 @@ db.students.aggregate([
 
 
      db.students.aggregate([{$bucket:{groupBy:"$age",boundaries:[29,30],output:{numPersons:{$sum:1},averageAge:{$avg:"$age"}}}}])
+
+// join two table 
+db.users.aggregate([{$lookup:{from:"users",localField:"_id",foreignField:"_id",as:"friends"}}])
