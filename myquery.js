@@ -228,3 +228,6 @@ db.students.aggregate([
 
 // join two table 
 db.users.aggregate([{$lookup:{from:"users",localField:"_id",foreignField:"_id",as:"friends"}}])
+
+//  find and modify (upsert) //// 
+db["startup_log"].findAndModify({query:{pid:4984},update:{$set:{"buildinfo.bits":878}}})
